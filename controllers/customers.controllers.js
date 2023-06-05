@@ -15,6 +15,42 @@ const register = async (req, res) => {
   }
 };
 
+const getAllCustomers = async (req, res) => {
+  try {
+      const ListUser = await Customer.findAll();
+      res.status(200).send(ListUser);
+  } catch (error) {
+      res.status(500).send(error);
+  }
+};
+
+const updateCustomers = async (req, res) => {
+  const {id} = req.params;
+  const { fullname, username, email, phone , province, district, ward, address, birthday, role } = req.body;
+  try {
+      const detailCustomer = await Customer.findOne({
+        where: {
+          id
+        }
+      });
+      detailCustomer.fullname = fullname;
+      detailCustomer.username = username;
+      detailCustomer.email = email;
+      detailCustomer.phone = phone;
+      detailCustomer.province = province;
+      detailCustomer.district = district;
+      detailCustomer.ward = ward;
+      detailCustomer.address = address;
+      detailCustomer.birthday = birthday;
+      detailCustomer.role = role;
+      await detailCustomer.save();
+
+      res.status(200).send(detailCustomer);
+  } catch (error) {
+      res.status(500).send(error);
+  }
+};
+
 const login = async (req, res) => {
   const { username, password } = req.body;
   const customer = await Customer.findOne({
@@ -42,7 +78,24 @@ const login = async (req, res) => {
   }
 };
 
+const deleteCustomer = async (req, res) => {
+  const {id} = req.params;
+  try {
+      await Customer.destroy({
+        where: {
+          id
+        }
+      });
+      res.status(200).send('Xóa thành công')
+  } catch (error) {
+      res.status(500).send(error);
+  }
+};
+
 module.exports = {
     register,
-    login
+    login,
+    getAllCustomers,
+    updateCustomers,
+    deleteCustomer
 }
