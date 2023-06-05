@@ -3,10 +3,9 @@ const app = express();
 const path = require("path");
 const { sequelize } = require("./models");
 const { rootRouter } = require("./routers");
-const dotenv = require("dotenv").config();
+require("dotenv").config();
 
 app.use(express.json());
-app.use(dotenv);
 
 //set up static file
 const publicPathDirectory = path.join(__dirname, "./public");
