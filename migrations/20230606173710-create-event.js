@@ -2,16 +2,39 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Tos', {
+    await queryInterface.createTable('Events', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      description: {
+      eventName: {
         allowNull: false,
         type: Sequelize.STRING
+      },
+      description: {
+        type: Sequelize.STRING
+      },
+      partnerName: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      tos: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      gameList: {
+        type: Sequelize.STRING
+      },
+      selectedVoucher: {
+        type: Sequelize.STRING
+      },
+      startDate: {
+        type: Sequelize.DATE
+      },
+      endDate: {
+        type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,
@@ -24,6 +47,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Tos');
+    await queryInterface.dropTable('Events');
   }
 };

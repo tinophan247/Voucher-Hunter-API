@@ -11,7 +11,7 @@ const checkExist = (Model) => {
             next()
         }
         else{
-            res.status(404).send(`Not found with id is ${id}`)
+            res.status(404).send(`Không tìm thấy với id là ${id}`)
         }
     }
 }
