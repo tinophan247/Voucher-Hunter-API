@@ -1,4 +1,4 @@
-const {Event} = require("../models");
+const {Event, Game} = require("../models");
 
 const createEvent = async (req, res) => {
   const { eventName, description, partnerName, tos, gameList,selectedVoucher,startDate, endDate } = req.body;
@@ -12,7 +12,14 @@ const createEvent = async (req, res) => {
 
 const getAllEvent = async (req, res) => {
     try {
-        const ListEvent = await Event.findAll();
+        const ListEvent = await Event.findAll(
+          {
+            include: [{
+              model : Game,
+              as: "game"
+            }],
+          }
+        );
         res.status(200).send(ListEvent);
     } catch (error) {
         res.status(500).send(error);
