@@ -29,13 +29,7 @@ module.exports = {
         references: {
           model: "games",
           key: "id",
-        },
-        get() {
-          return this.getDataValue("gameList").split(";");
-        },
-        set(val) {
-          this.setDataValue("gameList", val.join(";"));
-        },
+        }
       },
       selectedVoucher: {
         type: Sequelize.STRING,

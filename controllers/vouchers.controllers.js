@@ -1,9 +1,21 @@
 const {Voucher} = require("../models");
 
+const makeid = (length) => {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+}
+
 const createVoucher = async (req, res) => {
-    const {name, description, discount, img, code, condition1, condition2, tos, startDate, endDate } = req.body;
+    const {name, description, discount, img, condition1, condition2, tos, startDate, endDate } = req.body;
     try {
-      const newVoucher = await Voucher.create({ name, description, discount, img, code, condition1, condition2, tos, startDate, endDate  });
+      const newVoucher = await Voucher.create({ name, description, discount, img,  condition1, condition2, tos, startDate, endDate, code: makeid(12) });
       res.status(201).send(newVoucher);
     } catch (error) {
       res.status(500).send(error);

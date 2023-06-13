@@ -1,4 +1,4 @@
-const { Customer } = require("../models");
+const { Customer, Voucher } = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -8,7 +8,7 @@ const register = async (req, res) => {
     const salt = bcrypt.genSaltSync(16);
     const hashPassword = bcrypt.hashSync(password, salt);
 
-    const newCustomer = await Customer.create({fullname, username, email, avatar : 'https://cdn-icons-png.flaticon.com/512/3607/3607444.png', phone, address, ward, district, province, birthday,role : 'Customer', password : hashPassword});
+    const newCustomer = await Customer.create({fullname, username, email, avatar : 'https://cdn-icons-png.flaticon.com/512/3607/3607444.png', phone, address, ward, district, province, birthday ,role : 'Customer', password : hashPassword, voucherList: 1});
     res.status(201).send(newCustomer);
   } catch (error) {
     res.status(500).send(error);
@@ -17,7 +17,12 @@ const register = async (req, res) => {
 
 const getAllCustomers = async (req, res) => {
   try {
-      const ListUser = await Customer.findAll();
+      const ListUser = await Customer.findAll({
+        include: [{
+          model : Voucher,
+          as: "voucher"
+        }],
+      });
       res.status(200).send(ListUser);
   } catch (error) {
       res.status(500).send(error);
@@ -26,7 +31,7 @@ const getAllCustomers = async (req, res) => {
 
 const updateCustomers = async (req, res) => {
   const {id} = req.params;
-  const { fullname, username, email, phone , province, district, ward, address, birthday, role } = req.body;
+  const { fullname, username, email, phone , province, district, ward, address, birthday, role, voucherList } = req.body;
   try {
       const detailCustomer = await Customer.findOne({
         where: {
@@ -43,6 +48,7 @@ const updateCustomers = async (req, res) => {
       detailCustomer.address = address;
       detailCustomer.birthday = birthday;
       detailCustomer.role = role;
+      detailCustomer.voucherList = voucherList;
       await detailCustomer.save();
 
       res.status(200).send(detailCustomer);
@@ -62,14 +68,15 @@ const login = async (req, res) => {
     const isAuth = bcrypt.compareSync(password, customer.password);
     if (isAuth) {
       const token = jwt.sign(
-        { username: customer.username, role: customer.role, avatar: customer.avatar},
+        { username: customer.username, role: customer.role, avatar: customer.avatar, id: customer.id},
         "voucherHunter",
         { expiresIn: 60 * 60 }
       );
       const fullName = customer.fullname;
       const role = customer.role;
       const avatar = customer.avatar;
-      res.status(200).send({ message: "Đăng nhập thành công", token, fullName, role ,avatar });
+      const id = customer.id;
+      res.status(200).send({ message: "Đăng nhập thành công", token, fullName, role ,avatar,id });
     } else {
       res.status(500).send({ message: "Tài khoản hoặc mật khẩu không đúng" });
     }

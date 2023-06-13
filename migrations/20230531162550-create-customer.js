@@ -48,6 +48,14 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false
       },
+      voucherList: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "vouchers",
+          key: "id"
+        }
+      },
       role: {
         type: Sequelize.STRING,
         allowNull: false
