@@ -25,11 +25,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       gameList: {
-        type: Sequelize.INTEGER || Sequelize.STRING,
-        references: {
-          model: "games",
-          key: "id",
-        }
+        type: Sequelize.STRING ,
       },
       selectedVoucher: {
         type: Sequelize.STRING,

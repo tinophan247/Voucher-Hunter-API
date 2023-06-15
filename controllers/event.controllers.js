@@ -1,9 +1,9 @@
-const {Event, Game} = require("../models");
+const {Event} = require("../models");
 
 const createEvent = async (req, res) => {
-  const { eventName, description, partnerName, tos, gameList,selectedVoucher,startDate, endDate } = req.body;
+  const { eventName, description, partnerName, tos, gameList ,selectedVoucher,startDate, endDate } = req.body;
   try {
-    const newEvent = await Event.create({ eventName, description, partnerName, tos, gameList,selectedVoucher,startDate, endDate  });
+    const newEvent = await Event.create({ eventName, description, partnerName, tos, gameList : JSON.stringify(gameList) ,selectedVoucher,startDate, endDate  });
     res.status(201).send(newEvent);
   } catch (error) {
     res.status(500).send(error);
@@ -12,15 +12,11 @@ const createEvent = async (req, res) => {
 
 const getAllEvent = async (req, res) => {
     try {
-        const ListEvent = await Event.findAll(
-          {
-            include: [{
-              model : Game,
-              as: "game"
-            }],
-          }
-        );
-        res.status(200).send(ListEvent);
+        const ListEvent = await Event.findAll();
+        const customListEvent = ListEvent.map((item) => {
+          return {...item , dataValues : {...item.dataValues, gameList: JSON.parse(item.dataValues.gameList) }};
+           })
+        res.status(200).send(customListEvent );
     } catch (error) {
         res.status(500).send(error);
     }
@@ -28,7 +24,7 @@ const getAllEvent = async (req, res) => {
 
 const updateEvent = async (req, res) => {
   const {id} = req.params;
-  const { eventName, description, partnerName, tos, gameList,selectedVoucher,startDate, endDate  } = req.body;
+  const { eventName, description, partnerName, tos, gameList ,selectedVoucher,startDate, endDate  } = req.body;
   try {
       const detailEvent = await Event.findOne({
         where: {
@@ -39,13 +35,14 @@ const updateEvent = async (req, res) => {
       detailEvent.description = description;
       detailEvent.partnerName = partnerName;
       detailEvent.tos = tos;
-      detailEvent.gameList = gameList;
+      detailEvent.gameList = JSON.stringify(gameList);
       detailEvent.selectedVoucher = selectedVoucher;
       detailEvent.startDate = startDate;
       detailEvent.endDate = endDate;
       await detailEvent.save();
+      const customListEvent = {...detailEvent, dataValues : {...detailEvent.dataValues, gameList :JSON.parse(detailEvent.dataValues.gameList) }}
 
-      res.status(200).send(detailEvent);
+      res.status(200).send(customListEvent);
   } catch (error) {
       res.status(500).send(error);
   }

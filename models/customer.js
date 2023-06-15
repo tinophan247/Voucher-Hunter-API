@@ -5,7 +5,6 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Customer extends Model {
     static associate({Voucher}) {
-      this.belongsTo(Voucher, { foreignKey : "voucherList", as: 'voucher'});
     }
   }
   Customer.init({
@@ -19,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     district: DataTypes.INTEGER,
     province: DataTypes.INTEGER,
     birthday: DataTypes.DATE,
-    voucherList: DataTypes.INTEGER,
+    voucherList: DataTypes.STRING, 
     role:DataTypes.STRING,
     password: DataTypes.STRING
   }, {

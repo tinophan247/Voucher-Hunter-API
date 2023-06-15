@@ -49,12 +49,8 @@ module.exports = {
         allowNull: false
       },
       voucherList: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING ,
         allowNull: false,
-        references: {
-          model: "vouchers",
-          key: "id"
-        }
       },
       role: {
         type: Sequelize.STRING,

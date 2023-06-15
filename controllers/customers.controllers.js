@@ -1,14 +1,14 @@
-const { Customer, Voucher } = require("../models");
+const { Customer } = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
-  const {fullname, username, email, phone, address, ward, district, province, birthday, password  } = req.body;
+  const {fullname, username, email, phone, address, ward, district, province, birthday, password } = req.body;
   try {
     const salt = bcrypt.genSaltSync(16);
     const hashPassword = bcrypt.hashSync(password, salt);
 
-    const newCustomer = await Customer.create({fullname, username, email, avatar : 'https://cdn-icons-png.flaticon.com/512/3607/3607444.png', phone, address, ward, district, province, birthday ,role : 'Customer', password : hashPassword, voucherList: 1});
+    const newCustomer = await Customer.create({fullname, username, email, avatar : 'https://cdn-icons-png.flaticon.com/512/3607/3607444.png', phone, address, ward, district, province, birthday ,role : 'Customer', password : hashPassword, voucherList: "[]"});
     res.status(201).send(newCustomer);
   } catch (error) {
     res.status(500).send(error);
@@ -17,13 +17,11 @@ const register = async (req, res) => {
 
 const getAllCustomers = async (req, res) => {
   try {
-      const ListUser = await Customer.findAll({
-        include: [{
-          model : Voucher,
-          as: "voucher"
-        }],
-      });
-      res.status(200).send(ListUser);
+      const ListUser = await Customer.findAll();
+      const customListUser = ListUser.map((item) => {
+        return {...item , dataValues : {...item.dataValues, voucherList: JSON.parse(item.dataValues.voucherList) }};
+         })
+      res.status(200).send(customListUser);
   } catch (error) {
       res.status(500).send(error);
   }
@@ -48,10 +46,11 @@ const updateCustomers = async (req, res) => {
       detailCustomer.address = address;
       detailCustomer.birthday = birthday;
       detailCustomer.role = role;
-      detailCustomer.voucherList = voucherList;
+      detailCustomer.voucherList = JSON.stringify(voucherList);
       await detailCustomer.save();
+      const customListCustomer = {...detailCustomer, dataValues : {...detailCustomer.voucherList, gameList :JSON.parse(detailCustomer.dataValues.voucherList) }}
 
-      res.status(200).send(detailCustomer);
+      res.status(200).send(customListCustomer);
   } catch (error) {
       res.status(500).send(error);
   }
