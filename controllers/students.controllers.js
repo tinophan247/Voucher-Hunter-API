@@ -10,9 +10,9 @@ const getAllStudents = async (req, res) => {
 };
 
 const createStudents = async (req, res) => {
-    const { name } = req.body;
+    const { name, yob, score } = req.body;
     try {
-      const newStudent = await userList.create({ name });
+      const newStudent = await userList.create({ name, yob,score });
       res.status(201).send(newStudent);
     } catch (error) {
       res.status(500).send(error);
