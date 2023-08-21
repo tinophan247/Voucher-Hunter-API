@@ -14,9 +14,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   userList.init({
-    name: DataTypes.STRING,
-    yob: DataTypes.STRING,
-    score: DataTypes.STRING
+    username: DataTypes.STRING,
+    dob: DataTypes.DATE,
+    phone: DataTypes.STRING,
+    email: DataTypes.STRING,
+    feedback:DataTypes.STRING
   }, {
     sequelize,
     modelName: 'userList',
